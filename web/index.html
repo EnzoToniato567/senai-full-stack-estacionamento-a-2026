@@ -1,11 +1,150 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estacionamento ACME</title>
+    <title>ACME Park | Controle de Estacionamento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+    <header class="app-header">
+        <div class="logo">
+            <i class="fa-solid fa-square-parking brand-icon"></i>
+            <h1>ACME<span>Park</span></h1>
+        </div>
+        <nav class="app-navbar">
+            <button class="nav-btn active" id="nav-estadias" onclick="trocarAba('estadias')">
+                <i class="fa-solid fa-clock"></i> Estadias
+            </button>
+            <button class="nav-btn" id="nav-automoveis" onclick="trocarAba('automoveis')">
+                <i class="fa-solid fa-car"></i> Veículos
+            </button>
+        </nav>
+    </header>
+
+    <main class="app-container">
+        
+        <!-- SEÇÃO DE ESTADIAS -->
+        <section id="secao-estadias" class="content-section active">
+            <div class="section-header">
+                <div>
+                    <h2>Estadias no Pátio</h2>
+                    <p>Controle entradas, saídas e faturamento</p>
+                </div>
+                <button class="btn btn-primary" onclick="abrirModalEstadia()">
+                    <i class="fa-solid fa-plus"></i> Registrar Entrada
+                </button>
+            </div>
+
+            <!-- Painel de Estatísticas Simples -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <span class="stat-label">Veículos no Pátio</span>
+                    <h3 id="total-ativos">0</h3>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Faturamento Total</span>
+                    <h3 id="faturamento-total">R$ 0,00</h3>
+                </div>
+            </div>
+
+            <div id="lista-estadias" class="card-grid"></div>
+        </section>
+
+        <!-- SEÇÃO DE VEÍCULOS -->
+        <section id="secao-automoveis" class="content-section">
+            <div class="section-header">
+                <div>
+                    <h2>Veículos Autorizados</h2>
+                    <p>Cadastre os veículos e seus proprietários</p>
+                </div>
+                <button class="btn btn-primary" onclick="abrirModalVeiculo()">
+                    <i class="fa-solid fa-plus"></i> Cadastrar Veículo
+                </button>
+            </div>
+
+            <div id="lista-automoveis" class="card-grid"></div>
+        </section>
+    </main>
+
+    <!-- MODAL: VEÍCULO -->
+    <div id="modal-veiculo" class="modal-overlay oculto">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="titulo-modal-veiculo">Cadastrar Veículo</h3>
+                <button class="close-btn" onclick="fecharModalVeiculo()">&times;</button>
+            </div>
+            <form id="form-veiculo" onsubmit="salvarVeiculo(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="veiculo-placa">Placa *</label>
+                        <input type="text" id="veiculo-placa" placeholder="Ex: ABC-1234" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="veiculo-proprietario">Nome do Proprietário *</label>
+                        <input type="text" id="veiculo-proprietario" placeholder="Ex: Enzo Toniato" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="veiculo-tipo">Tipo de Veículo *</label>
+                        <select id="veiculo-tipo" required>
+                            <option value="Carro">Carro</option>
+                            <option value="Moto">Moto</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="veiculo-modelo">Modelo / Marca</label>
+                        <input type="text" id="veiculo-modelo" placeholder="Ex: Honda Civic">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="fecharModalVeiculo()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ESTADIA -->
+    <div id="modal-estadia" class="modal-overlay oculto">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="titulo-modal-estadia">Registrar Entrada</h3>
+                <button class="close-btn" onclick="fecharModalEstadia()">&times;</button>
+            </div>
+            <form id="form-estadia" onsubmit="salvarEstadia(event)">
+                <div class="modal-body">
+                    <div id="alerta-sem-veiculos" class="alerta oculto">
+                        <p>Nenhum veículo cadastrado! Cadastre um veículo primeiro.</p>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="irParaVeiculos()">Cadastrar Veículo</button>
+                    </div>
+                    <div class="form-group" id="grupo-select-veiculo">
+                        <label for="estadia-placa">Selecione o Veículo *</label>
+                        <select id="estadia-placa" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="estadia-valor-hora">Valor por Hora (R$) *</label>
+                        <input type="number" id="estadia-valor-hora" step="1" value="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="estadia-entrada">Data e Hora de Entrada *</label>
+                        <input type="datetime-local" id="estadia-entrada" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="fecharModalEstadia()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-salvar-estadia">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 ACME Park. Funcionamento Standalone (LocalStorage).</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
