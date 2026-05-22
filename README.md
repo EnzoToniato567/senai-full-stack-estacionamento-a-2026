@@ -43,5 +43,20 @@ O ESTACIONAMENTO ACME tem atuado em nossa cidade com ótimo atendimento e segura
 
 ## Tecnologias
 
+- VsCode
+- GitHub
+- Html, CSS & JavaScript Vanilla
+- Prisma
+- Xampp
+
 ## Passo a Passo de como executar e testar
 
+# Frontend
+-Clone este repositório
+-Abra com VsCode
+-Inicie o arquivo `index.html` com a extensão Live Server
+
+# Backend 
+-Inicie o servidor rodando `node server.js` ou `npx run dev`
+- Deixe o servidor rodando na porta 3000
+- Não feche o terminal ou o servidor durante a execução do fullstack
